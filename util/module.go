@@ -25,13 +25,15 @@ import (
 
 // CloneModule clones a remote git repository
 // An optional keyfile may be specified for use in ssh authentication
-func CloneModule(dir string, url string, branch string, keyFile string) error {
-	var cloneOptions git.CloneOptions
+// If quiet is true, don't print clone progress to stdout
+func CloneModule(dir string, url string, branch string, keyFile string, quiet bool) error {
+	cloneOptions := git.CloneOptions{
+		URL: url,
+	}
 
-	log.Printf("Cloning new remote module: %s\n", url)
-	cloneOptions = git.CloneOptions{
-		URL:      url,
-		Progress: os.Stdout,
+	if !quiet {
+		log.Printf("Cloning new remote module: %s\n", url)
+		cloneOptions.Progress = os.Stdout
 	}
 
 	if len(branch) != 0 {
